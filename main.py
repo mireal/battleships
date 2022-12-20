@@ -118,26 +118,7 @@ def comp_choice(size):
 
 
 while gamemode == 0:
-    # orient = int(input('choose ship orientation. 0 for horizontal, 1 for vertical: '))
-    # while orient not in range(0, 2):
-    #     orient = int(input('choose CORRECT ship orientation. 0 for horizontal, 1 for vertical: '))
-    # size = int(input('choose the size of your ship: '))
-    # while size not in range(1, 5):
-    #     size = int(input('choose the CORRECT size of your ship: '))
-    # coord = int(input('choose the square for your ship: '))
-    # if orient == 0:
-    #     while (coord % 10) + size > 10 or board[coord:coord + size] != (
-    #             list('_' for x in
-    #                  range(coord, coord + size))):  # check if ship is not out of field and it placed on empty fields
-    #         coord = int(input('choose the CORRECT square for your ship: '))
-    #
-    # elif orient == 1:
-    #     while coord + (size * 10) > 100 or board[coord:coord + (size * 10):10] != (
-    #             list('_' for x in
-    #                  range(coord, coord + size))):  # check if ship is not out of field and it placed on empty fields
-    #         coord = int(input('choose the CORRECT square for your ship: '))
-    #
-    # battleship(size, orient, coord, board)  # size, orient, coord, board
+
     user_choice()
     comp_choice(3)
     gameboard(board, board2)
@@ -161,30 +142,3 @@ while gamemode == 2:
 
 
 
-
-    # def gameboard():
-    #     print('   0  1  2  3  4  5  6  7  8  9      0  1  2  3  4  5  6  7  8  9')
-    #     print('0', end='  ')
-    #     counter = 1
-    #     counter2 = 0
-    #     for x in board:
-    #
-    #         if counter % 10 == 0:
-    #             print(x, end='')
-    #             print('   ', end='')
-    #             for z in board2[counter2:counter2 + 10]:
-    #                 if counter2 % 10 == 0:
-    #                     print(int(counter2 / 10), end='  ')
-    #                 print(z, end='  ')
-    #                 counter2 += 1
-    #             print('')
-    #             if counter < 91:
-    #                 print(int(counter / 10), end='  ')
-    #
-    #         else:
-    #             print(x, end='  ')
-    #
-    #         counter += 1
-    #
-    #
-    # gameboard()
