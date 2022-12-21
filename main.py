@@ -2,15 +2,18 @@ import random
 
 board = ['_' for x in range(0, 100)]
 board2 = ['_' for z in range(0, 100)]
+board3 = ['_' for y in range(0, 100)]
 
 orient = 0
 
-gamemode = int(input('0 for manual, 1 for random ship placement :'))
+
+# gamemode = int(input('0 for manual, 1 for random ship placement :'))
 
 
 def battleship(size, orient, coord, board):
     if orient == 0:
         board[coord:coord + size] = 'S' * size
+
         if coord > 10:  # check up
             board[coord - 10: coord - 10 + size] = '*' * size
         if coord < 90:  # check down
@@ -27,7 +30,7 @@ def battleship(size, orient, coord, board):
         if coord + size < 100 and board[coord + size] == '*':  # fix out of line problem
             if board[coord + size - 11] == '*':
                 board[coord + size - 10] = '*'
-            if coord < 90 and board[coord + size + 9] == '*':  # fix out of line problem
+            if coord + size < 90 and board[coord + size + 9] == '*':  # fix out of line problem
                 board[coord + size + 10] = '*'
 
     if orient == 1:
@@ -38,14 +41,14 @@ def battleship(size, orient, coord, board):
             board[coord + 1:coord + (size * 10) + 1:10] = '*' * size
         if coord > 10:  # check up
             board[coord - 10] = '*'
-        if coord < 90:  # check down
+        if coord + (size * 10) < 90:  # check down
             board[coord + (size * 10)] = '*'
         if board[coord - 10] == '*':  # check up and
             if board[coord - 1] == '*':
                 board[coord - 11] = '*'
             if board[coord + 1] == '*':
                 board[coord - 9] = '*'
-        if board[coord + (size * 10)] == '*':  # check down and
+        if coord + (size * 10) < 90 and board[coord + (size * 10)] == '*':  # fix out of line problem
             if board[coord - 1] == '*':
                 board[coord + (size * 10) - 1] = '*'
             if board[coord + 1] == '*':
@@ -76,6 +79,15 @@ def gameboard(board, board2):
 
         counter += 1
 
+def cleanboard(board, cleanboard):
+    counter = 0
+    for x in board:
+        if x == '*':
+            cleanboard[counter] = '_'
+
+        else: cleanboard[counter] = x
+
+        counter += 1
 
 def user_choice():
     orient = int(input('choose ship orientation. 0 for horizontal, 1 for vertical: '))
@@ -92,53 +104,121 @@ def user_choice():
             coord = int(input('choose the CORRECT square for your ship: '))
 
     elif orient == 1:
-        while coord + (size * 10) > 100 or board[coord:coord + (size * 10):10] != (
+        while coord + (size * 10) >= 110 or board[coord:coord + (size * 10):10] != (
                 list('_' for x in
                      range(coord, coord + size))):  # check if ship is not out of field and it placed on empty fields
             coord = int(input('choose the CORRECT square for your ship: '))
 
     battleship(size, orient, coord, board)  # size, orient, coord, board
+    print(board[coord:coord + (size * 10):10])
 
 
 def comp_choice(size):
     orient = random.choice(list(range(0, 2)))
     # size = random.choice(list(range(1, 5)))
     coord = random.choice(list(range(0, 100)))
+    print(board[coord:coord + size])
+    print('2', list('_' for x in range(coord, coord + size)))
     if orient == 0:
-        while (coord % 10) + size > 10 or board[coord:coord + size] != (
+        while (coord % 10) + size > 10 and board[coord:coord + size] != (
                 list('_' for x in
                      range(coord, coord + size))):  # check if ship is not out of field and it placed on empty fields
             coord = random.choice(list(range(0, 100)))
+        battleship(size, orient, coord, board)  # size, orient, coord, board
     elif orient == 1:
-        while coord + (size * 10) > 100 or board[coord:coord + (size * 10):10] != (
+        while coord + (size * 10) > 100 and board[coord:coord + (size * 10):10] != (
                 list('_' for x in
                      range(coord, coord + size))):  # check if ship is not out of field and it placed on empty fields
             coord = random.choice(list(range(0, 100)))
-    battleship(size, orient, coord, board2)  # size, orient, coord, board
+        battleship(size, orient, coord, board)  # size, orient, coord, board
 
 
+targets = list(set(list()))
+
+def ship_placing():
+    count = 0
+
+    while count < 7:
+
+        if count == 0:
+            comp_choice(4)
+
+        elif count < 3:
+            comp_choice(3)
+
+        elif count < 6:
+            comp_choice(2)
+
+        count += 1
+
+
+
+
+
+def attack(board):
+    attack_coord = int(input('choose the field for the attack: '))
+
+    if attack_coord in targets:
+        targets.remove(attack_coord)
+
+    while attack_coord not in range(0, 100) or board[attack_coord] == 'D' or board[attack_coord] == 'X':
+        attack_coord = int(input('choose the CORRECT field for the attack: '))
+
+    if board[attack_coord] == 'S':
+        board[attack_coord] = 'D'
+
+        if board[attack_coord - 1] == 'S':
+            # targets.append(board[attack_coord - 1])
+            targets.append(board.index('D') - 1)
+
+            # board.index('D')
+        if board[attack_coord + 1] == 'S':
+            targets.append(board.index('D') + 1)
+        if board[attack_coord - 10] == 'S':
+            targets.append(board.index('D') - 10)
+        if board[attack_coord + 10] == 'S':
+            targets.append(board.index('D') + 10)
+        else:
+            board[attack_coord] = 'X'
+
+    else:
+        board[attack_coord] = '#'
+
+
+    print('targets: ', targets)
+
+
+
+"""game cycles"""
+
+gamemode = 1
 while gamemode == 0:
-
     user_choice()
-    comp_choice(3)
+    # battleship(4, 0, 33, board)
+
     gameboard(board, board2)
+    while True:
+        attack(board)
+        gameboard(board, board2)
 
 stop_count = 0
 while gamemode == 1:
-    comp_choice(3)
-    gameboard(board, board2)
-    stop_count += 1
-    if stop_count == 3:
-        quit()
+    ship_placing()
+    cleanboard(board, board3)
+    gameboard(board, board3)
+
+
+
+
+    quit()
+
 
 while gamemode == 2:
     size = 1
     comp_choice(size)
+    size = 2
+    comp_choice(size)
     gameboard(board, board2)
     stop_count += 1
-    if stop_count == 3:
+    if stop_count == 2:
         quit()
-
-
-
-
