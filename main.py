@@ -4,6 +4,7 @@ board = ['_' for x in range(0, 100)]
 board2 = ['_' for z in range(0, 100)]
 
 clean_board = ['_' for y in range(0, 100)]
+hidden_board = ['_' for c in range(0, 100)]
 
 list_h = list(range(0, 100))
 list_v = list(range(0, 100))
@@ -111,6 +112,19 @@ def cleanboard(board, cleanboard):
 
             else:
                 cleanboard[counter] = x
+
+        counter += 1
+
+def hiddenboard(board, hiddenboard):
+
+    counter = 0
+    for x in board:
+        if counter < 100:
+            if x == '*' or x == '_' or x == 'S':
+                hiddenboard[counter] = '.'
+
+            else:
+                hiddenboard[counter] = x
 
         counter += 1
 
@@ -289,16 +303,26 @@ while gamemode == 0:
     ship_placing(board)
     ship_placing(board2)
     cleanboard(board, clean_board)
-    gameboard(clean_board, board2)
+    hiddenboard(board2, hidden_board)
+    gameboard(clean_board, hidden_board)
 
-    while stop_count < 5:
+    while 'S' in board or 'S' in board2:
         user_attack(board2)
         comp_attack(board)
         cleanboard(board, clean_board)
-        gameboard(clean_board, board2)
+        hiddenboard(board2, hidden_board)
+        gameboard(clean_board, hidden_board)
         ship_status(board, ship_list1)
         ship_status(board2, ship_list2)
         stop_count += 1
+        if 'S' not in board:
+            print('game over!')
+            quit()
+        if 'S' not in board2:
+            print('you won!')
+            quit()
+
+
 
 
 while gamemode == 1:
