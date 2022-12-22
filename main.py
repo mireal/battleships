@@ -19,7 +19,7 @@ targets = list()
 orient = 0
 
 
-# gamemode = int(input('0 for manual, 1 for random ship placement :'))
+gamemode = int(input('0 for manual, 1 for comp game :'))
 
 
 def battleship(size, orient, coord, board):
@@ -108,8 +108,9 @@ def cleanboard(board, cleanboard):
     for x in board:
         if counter < 100:
             if x == '*' or x == '_':
+                cleanboard[counter] = ' '
+            elif x == '#':
                 cleanboard[counter] = '.'
-
             else:
                 cleanboard[counter] = x
 
@@ -296,7 +297,7 @@ def ship_status(board,ship_list):
 
 """game cycles"""
 
-gamemode = 0
+
 stop_count = 0
 
 while gamemode == 0:
@@ -326,14 +327,26 @@ while gamemode == 0:
 
 
 while gamemode == 1:
+
     ship_placing(board)
-    while stop_count < 30:
+    ship_placing(board2)
+    cleanboard(board, clean_board)
+    cleanboard(board2, hidden_board)
+    gameboard(clean_board, hidden_board)
+
+    while 'S' in board or 'S' in board2:
         comp_attack(board)
+        comp_attack(board2)
         cleanboard(board, clean_board)
-        gameboard(board, clean_board)
+        cleanboard(board2, hidden_board)
+        gameboard(clean_board, hidden_board)
         ship_status(board, ship_list1)
+        ship_status(board2, ship_list2)
         stop_count += 1
-
-
-    quit()
+        if 'S' not in board:
+            print('comp2 won!')
+            quit()
+        if 'S' not in board2:
+            print('comp1 won!')
+            quit()
 
