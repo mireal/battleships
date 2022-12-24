@@ -6,8 +6,8 @@ board2 = ['_' for z in range(0, 100)]
 clean_board = ['_' for y in range(0, 100)]
 hidden_board = ['_' for c in range(0, 100)]
 
-list_h = list(range(0, 100))
-list_v = list(range(0, 100))
+list_coord_1 = list(range(0, 100))
+list_coord_2 = list(range(0, 100))
 
 ship_list1 = []
 ship_list2 = []
@@ -153,25 +153,30 @@ def user_choice(board):
 
 def comp_choice(size, board):
     """comp choose size, orientation and coordinates of the ship. Then values goes to battleship for placing"""
-
+    list_coord = 0
     board = board
+    if board == board1:
+        list_coord = list_coord_1
+    elif board == board2:
+        list_coord = list_coord_2
 
-    orient = random.choice(list(range(0, 2)))
+    orient = random.randint(0, 1)
 
     if orient == 0:
-        coord = random.choice(list_h)
+        coord = random.choice(list_coord)
+
         while (coord % 10) + size > 10 or board[coord:coord + size] != list(
                 '_' * size):  # check if ship is not out of field and it placed on empty fields
-            coord = random.choice(list_h)
+            coord = random.choice(list_coord)
         battleship(size, orient, coord, board)  # size, orient, coord, board
-        list_h.remove(coord)
+        # list_coord.remove(coord)
     elif orient == 1:
-        coord = random.choice(list_v)
+        coord = random.choice(list_coord)
         while coord + (size * 10) > 100 or board[coord:coord + (size * 10):10] != list(
                 '_' * size):  # check if ship is not out of field and it placed on empty fields
-            coord = random.choice(list_v)
+            coord = random.choice(list_coord)
         battleship(size, orient, coord, board)  # size, orient, coord, board
-        list_v.remove(coord)
+        list_coord.remove(coord)
 
     # print('orientation - ', orient, 'size - ', size, 'coord - ', coord)
 
@@ -207,6 +212,7 @@ def user_attack(board):
 
     if board[attack_coord] == 'S':
         board[attack_coord] = 'D'
+        print('you hit the target!')
     else:
         board[attack_coord] = '#'
 
@@ -218,18 +224,15 @@ def comp_attack(board):
     while board[attack_coord] == 'D' or board[attack_coord] == 'X':
         attack_coord = random.choice(attack_coords)
 
-    if bool(targets):
+    if targets:
         attack_coord = random.choice(targets)
         targets.remove(attack_coord)
-
-
-    if board[attack_coord] == 'S':
-        print('Hit!')
 
     shoot_conditions(board, attack_coord)
 
 
 def shoot_conditions(board, attack_coord):
+
     """checks if shot hits the ship, print the shooting coordinates"""
     if board[attack_coord] == 'S':
         board[attack_coord] = 'D'
@@ -246,8 +249,27 @@ def shoot_conditions(board, attack_coord):
     else:
         board[attack_coord] = '#'
 
-    print('computer shoot at coord ', attack_coord)
 
+
+    if gamemode == 1:
+        if board == board1:
+            print('Comp 1 shoot at the coordinate', attack_coord, end='.')
+            if board[attack_coord] == 'D':
+                print(' Hit!')
+            else:
+                print(' Miss!')
+        else:
+            print('Comp 2 shoot at the coordinate', attack_coord, end='.')
+            if board[attack_coord] == 'D':
+                print(' Hit!')
+            else:
+                print(' Miss!')
+    else:
+        print('Computer shoot at the coordinate', attack_coord, end='.')
+        if board[attack_coord] == 'D':
+            print(' Hit!')
+        else:
+            print(' Miss!')
 
 def ship_status(board, ship_list):
     """check if all ship squares are damaged, then replace it with X squares """
@@ -275,9 +297,7 @@ def ship_status(board, ship_list):
                         print('ship on coordinates', coord, ' destroyed!')
 
 
-
 """game cycles"""
-
 
 while gamemode == 0:
     ship_placing(board1)
