@@ -18,11 +18,12 @@ targets = list()
 
 orient = 0
 
-
 gamemode = int(input('0 for manual, 1 for comp game :'))
 
 
 def battleship(size, orient, coord, board):
+    """placing the ship and surrounding symbols on the board using given values"""
+
     if orient == 0:
         board[coord:coord + size] = 'S' * size
 
@@ -66,7 +67,6 @@ def battleship(size, orient, coord, board):
             if board[coord + 1] == '*' and coord % 10 != 9:
                 board[coord + (size * 10) + 1] = '*'
 
-
     list_of_value = [orient, size, coord]
     if board == board2:
         ship_list2.append(list_of_value)
@@ -74,11 +74,9 @@ def battleship(size, orient, coord, board):
         ship_list1.append(list_of_value)
 
 
-
-
-
-
 def gameboard(board, board2):
+    """draw two gameboards"""
+
     print('   0  1  2  3  4  5  6  7  8  9      0  1  2  3  4  5  6  7  8  9')
     print('0', end='  ')
     counter = 1
@@ -102,8 +100,9 @@ def gameboard(board, board2):
 
         counter += 1
 
-def cleanboard(board, cleanboard):
 
+def cleanboard(board, cleanboard):
+    """make a gameboard look cleaner"""
     counter = 0
     for x in board:
         if counter < 100:
@@ -116,8 +115,9 @@ def cleanboard(board, cleanboard):
 
         counter += 1
 
-def hiddenboard(board, hiddenboard):
 
+def hiddenboard(board, hiddenboard):
+    """hide the ships on board from player"""
     counter = 0
     for x in board:
         if counter < 100:
@@ -129,7 +129,10 @@ def hiddenboard(board, hiddenboard):
 
         counter += 1
 
+
 def user_choice():
+    """user choose size, orientation and coordinates of the ship. Then values goes to battleship for placing"""
+
     orient = int(input('choose ship orientation. 0 for horizontal, 1 for vertical: '))
     while orient not in range(0, 2):
         orient = int(input('choose CORRECT ship orientation. 0 for horizontal, 1 for vertical: '))
@@ -146,30 +149,35 @@ def user_choice():
             coord = int(input('choose the CORRECT square for your ship: '))
 
     battleship(size, orient, coord, board)  # size, orient, coord, board
-    # print(board[coord:coord + (size * 10):10])
 
-def comp_choice(size,board):
+
+def comp_choice(size, board):
+    """comp choose size, orientation and coordinates of the ship. Then values goes to battleship for placing"""
+
     board = board
 
     orient = random.choice(list(range(0, 2)))
 
     if orient == 0:
         coord = random.choice(list_h)
-        while (coord % 10) + size > 10 or board[coord:coord + size] != list('_' * size):  # check if ship is not out of field and it placed on empty fields
+        while (coord % 10) + size > 10 or board[coord:coord + size] != list(
+                '_' * size):  # check if ship is not out of field and it placed on empty fields
             coord = random.choice(list_h)
         battleship(size, orient, coord, board)  # size, orient, coord, board
         list_h.remove(coord)
     elif orient == 1:
         coord = random.choice(list_v)
-        while coord + (size * 10) > 100 or board[coord:coord + (size * 10):10] != list('_' * size):  # check if ship is not out of field and it placed on empty fields
+        while coord + (size * 10) > 100 or board[coord:coord + (size * 10):10] != list(
+                '_' * size):  # check if ship is not out of field and it placed on empty fields
             coord = random.choice(list_v)
         battleship(size, orient, coord, board)  # size, orient, coord, board
         list_v.remove(coord)
 
-
     # print('orientation - ', orient, 'size - ', size, 'coord - ', coord)
 
+
 def ship_placing(board):
+    """automatically places 10 ships of different sizes on board"""
     board = board
     count = 0
 
@@ -188,10 +196,10 @@ def ship_placing(board):
             comp_choice(1, board)
 
         count += 1
-        # cleanboard(board, board3)
-        # gameboard(board,board3)
+
 
 def user_attack(board):
+    """user makes his move. if ship on the given coordinate - ship  cell turns to 'D' """
     attack_coord = int(input('choose the field for the attack: '))
 
     while attack_coord not in range(0, 100) or board[attack_coord] == 'D' or board[attack_coord] == 'X':
@@ -204,6 +212,7 @@ def user_attack(board):
 
 
 def comp_attack(board):
+    """comp randomly choose the square for the attack, rechoose if it doesnt pass the conditions. send value to shoot_conditions"""
     attack_coord = random.choice(attack_coords)
 
     while board[attack_coord] == 'D' or board[attack_coord] == 'X':
@@ -213,44 +222,15 @@ def comp_attack(board):
         attack_coord = random.choice(targets)
         targets.remove(attack_coord)
 
-        # attack_coords.remove(attack_coord)
 
     if board[attack_coord] == 'S':
         print('Hit!')
 
-
     shoot_conditions(board, attack_coord)
 
-# def shoot_conditions(board, attack_coord):
-#
-#     if board[attack_coord] == 'S':
-#         board[attack_coord] = 'D'
-#
-#         if board[attack_coord - 1] == 'S':
-#             # targets.append(board[attack_coord - 1])
-#             targets.append(board.index('D') - 1)
-#
-#             # board.index('D')
-#         if attack_coord < 99 and board[attack_coord + 1] == 'S':
-#             targets.append(board.index('D') + 1)
-#         if board[attack_coord - 10] == 'S':
-#             targets.append(board.index('D') - 10)
-#         if attack_coord < 90 and board[attack_coord + 10] == 'S':
-#             targets.append(board.index('D') + 10)
-#         # else:
-#         #     board[attack_coord] = 'X'
-#         elif (attack_coord < 99 and board[attack_coord + 1] != 'S') and board[attack_coord - 1] != 'S' and (attack_coord < 90 and board[attack_coord + 10] != 'S') and board[attack_coord - 10] != 'S':
-#             board[attack_coord] = 'X'
-#             print('ship destroyed! ')
-#
-#     else:
-#         board[attack_coord] = '#'
-#     attack_coords.remove(attack_coord)
-#
-#     print('targets: ', targets, 'att coord: ', attack_coord)
 
 def shoot_conditions(board, attack_coord):
-
+    """checks if shot hits the ship, print the shooting coordinates"""
     if board[attack_coord] == 'S':
         board[attack_coord] = 'D'
 
@@ -266,39 +246,37 @@ def shoot_conditions(board, attack_coord):
     else:
         board[attack_coord] = '#'
 
-
-    print( 'computer shoot at coord ', attack_coord)
-
-def ship_status(board,ship_list):
+    print('computer shoot at coord ', attack_coord)
 
 
-
+def ship_status(board, ship_list):
+    """check if all ship squares are damaged, then replace it with X squares """
     size = 0
     orient = 0
+    coord = 0
 
     for ship in ship_list:
-        for ind, value in enumerate(ship_list):
+        for ind, value in enumerate(ship):
             if ind == 0:
                 orient = value
             if ind == 1:
                 size = value
             if ind == 2:
                 coord = value
+
                 if orient == 0:
                     if board[coord: coord + size] == list('D' * size):
                         board[coord: coord + size] = list('X' * size)
-                    print('ship on coordinates', coord, ' destroyed!')
+                        print('ship on coordinates', coord, ' destroyed!')
                 if orient == 1:
-                    if board[coord: coord * size + 10 : 10] == list('D' * size):
-                        board[coord: coord * size + 10 : 10] = list('X' * size)
-                    print('ship on coordinates', coord, ' destroyed!')
+                    if board[coord: coord * size + 10: 10] == list('D' * size):
+                        board[coord: coord * size + 10: 10] = list('X' * size)
+                        print('ship on coordinates', coord, ' destroyed!')
 
 
 
 """game cycles"""
 
-
-stop_count = 0
 
 while gamemode == 0:
     ship_placing(board)
@@ -315,16 +293,12 @@ while gamemode == 0:
         gameboard(clean_board, hidden_board)
         ship_status(board, ship_list1)
         ship_status(board2, ship_list2)
-        stop_count += 1
         if 'S' not in board:
             print('game over!')
             quit()
         if 'S' not in board2:
             print('you won!')
             quit()
-
-
-
 
 while gamemode == 1:
 
@@ -342,11 +316,9 @@ while gamemode == 1:
         gameboard(clean_board, hidden_board)
         ship_status(board, ship_list1)
         ship_status(board2, ship_list2)
-        stop_count += 1
         if 'S' not in board:
             print('comp2 won!')
             quit()
         if 'S' not in board2:
             print('comp1 won!')
             quit()
-
