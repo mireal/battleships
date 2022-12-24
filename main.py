@@ -1,6 +1,6 @@
 import random
 
-board = ['_' for x in range(0, 100)]
+board1 = ['_' for x in range(0, 100)]
 board2 = ['_' for z in range(0, 100)]
 
 clean_board = ['_' for y in range(0, 100)]
@@ -130,7 +130,7 @@ def hiddenboard(board, hiddenboard):
         counter += 1
 
 
-def user_choice():
+def user_choice(board):
     """user choose size, orientation and coordinates of the ship. Then values goes to battleship for placing"""
 
     orient = int(input('choose ship orientation. 0 for horizontal, 1 for vertical: '))
@@ -261,6 +261,7 @@ def ship_status(board, ship_list):
                 orient = value
             if ind == 1:
                 size = value
+
             if ind == 2:
                 coord = value
 
@@ -269,8 +270,9 @@ def ship_status(board, ship_list):
                         board[coord: coord + size] = list('X' * size)
                         print('ship on coordinates', coord, ' destroyed!')
                 if orient == 1:
-                    if board[coord: coord * size + 10: 10] == list('D' * size):
-                        board[coord: coord * size + 10: 10] = list('X' * size)
+                    print(board[coord: coord * size + 10: 10])
+                    if board[coord:coord + (size * 10):10] == list('D' * size):
+                        board[coord:coord + (size * 10):10] = list('X' * size)
                         print('ship on coordinates', coord, ' destroyed!')
 
 
@@ -279,21 +281,22 @@ def ship_status(board, ship_list):
 
 
 while gamemode == 0:
-    ship_placing(board)
+    ship_placing(board1)
     ship_placing(board2)
-    cleanboard(board, clean_board)
+    cleanboard(board1, clean_board)
     hiddenboard(board2, hidden_board)
     gameboard(clean_board, hidden_board)
 
-    while 'S' in board or 'S' in board2:
+    while 'S' in board1 or 'S' in board2:
         user_attack(board2)
-        comp_attack(board)
-        cleanboard(board, clean_board)
+        comp_attack(board1)
+        ship_status(board1, ship_list1)
+        ship_status(board2, ship_list2)
+        cleanboard(board1, clean_board)
         hiddenboard(board2, hidden_board)
         gameboard(clean_board, hidden_board)
-        ship_status(board, ship_list1)
-        ship_status(board2, ship_list2)
-        if 'S' not in board:
+
+        if 'S' not in board1:
             print('game over!')
             quit()
         if 'S' not in board2:
@@ -302,21 +305,22 @@ while gamemode == 0:
 
 while gamemode == 1:
 
-    ship_placing(board)
+    ship_placing(board1)
     ship_placing(board2)
-    cleanboard(board, clean_board)
+    cleanboard(board1, clean_board)
     cleanboard(board2, hidden_board)
     gameboard(clean_board, hidden_board)
 
-    while 'S' in board or 'S' in board2:
-        comp_attack(board)
+    while 'S' in board1 or 'S' in board2:
+        comp_attack(board1)
         comp_attack(board2)
-        cleanboard(board, clean_board)
+        ship_status(board1, ship_list1)
+        ship_status(board2, ship_list2)
+        cleanboard(board1, clean_board)
         cleanboard(board2, hidden_board)
         gameboard(clean_board, hidden_board)
-        ship_status(board, ship_list1)
-        ship_status(board2, ship_list2)
-        if 'S' not in board:
+
+        if 'S' not in board1:
             print('comp2 won!')
             quit()
         if 'S' not in board2:
