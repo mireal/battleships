@@ -270,7 +270,6 @@ def ship_status(board, ship_list):
                         board[coord: coord + size] = list('X' * size)
                         print('ship on coordinates', coord, ' destroyed!')
                 if orient == 1:
-                    print(board[coord: coord * size + 10: 10])
                     if board[coord:coord + (size * 10):10] == list('D' * size):
                         board[coord:coord + (size * 10):10] = list('X' * size)
                         print('ship on coordinates', coord, ' destroyed!')
