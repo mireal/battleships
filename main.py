@@ -14,11 +14,68 @@ ship_list2 = []
 
 attack_coords = list(range(0, 100))
 
-targets = list()
 
+targets_1 = list()
+targets_2 = list()
 orient = 0
 
 gamemode = int(input('0 for manual, 1 for comp game :'))
+
+
+
+# def ship_perimeter(size, orient, coord, board, sym, sym2):
+#     """placing the ship and surrounding symbols on the board using given values"""
+#
+#
+#     if orient == 0:
+#         board[coord:coord + size] = sym2 * size
+#
+#         if coord > 10:  # check up
+#             board[coord - 10: coord - 10 + size] = sym * size
+#         if coord < 90:  # check down
+#             board[coord + 10: coord + 10 + size] = sym * size
+#         if coord % 10 != 0:  # check left
+#             board[coord - 1] = sym
+#             if board[coord - 1] == sym:  # check left and:
+#                 if board[coord - 10] == sym:  # check up
+#                     board[coord - 11] = sym
+#                 if coord < 90 and board[coord + 10] == sym:  # fix out of line problem
+#                     board[coord + 9] = sym
+#         if (coord + size) % 10 != 0:  # check right
+#             board[coord + size] = sym
+#             if coord + size < 100 and board[coord + size] == sym:  # fix out of line problem
+#                 if board[coord + size - 11] == sym:
+#                     board[coord + size - 10] = sym
+#                 if coord + size < 90 and board[coord + size + 9] == sym:  # fix out of line problem
+#                     board[coord + size + 10] = sym
+#
+#     if orient == 1:
+#         board[coord:coord + (size * 10):10] = sym * size
+#         if coord % 10 != 0:  # check left
+#             board[coord - 1:coord + (size * 10) - 1:10] = sym * size
+#         if coord % 10 != 9:  # check right
+#             board[coord + 1:coord + (size * 10) + 1:10] = sym * size
+#         if coord > 10:  # check up
+#             board[coord - 10] = sym
+#         if coord + (size * 10) - 10 < 90:  # check down
+#             board[coord + (size * 10)] = sym
+#         if board[coord - 10] == sym:  # check up and
+#             if board[coord - 1] == sym and coord % 10 != 0:
+#                 board[coord - 11] = sym
+#             if board[coord + 1] == sym and coord % 10 != 9:
+#                 board[coord - 9] = sym
+#         if coord + (size * 10) < 100 and board[coord + (size * 10)] == sym:  # check down and:. fix out of line problem
+#             if board[coord - 1] == sym and coord % 10 != 0:
+#                 board[coord + (size * 10) - 1] = sym
+#             if board[coord + 1] == sym and coord % 10 != 9:
+#                 board[coord + (size * 10) + 1] = sym
+#
+#     if sym == '*':
+#         list_of_value = [orient, size, coord]
+#         if board == board2:
+#             ship_list2.append(list_of_value)
+#         else:
+#             ship_list1.append(list_of_value)
 
 
 def battleship(size, orient, coord, board):
@@ -207,7 +264,7 @@ def user_attack(board):
     """user makes his move. if ship on the given coordinate - ship  cell turns to 'D' """
     attack_coord = int(input('choose the field for the attack: '))
 
-    while attack_coord not in range(0, 100) or board[attack_coord] == 'D' or board[attack_coord] == 'X':
+    while attack_coord not in range(0, 100) or board[attack_coord] in ['D', 'X', '#']:
         attack_coord = int(input('choose the CORRECT field for the attack: '))
 
     if board[attack_coord] == 'S':
@@ -217,21 +274,21 @@ def user_attack(board):
         board[attack_coord] = '#'
 
 
-def comp_attack(board):
+def comp_attack(board, targets):
     """comp randomly choose the square for the attack, rechoose if it doesnt pass the conditions. send value to shoot_conditions"""
     attack_coord = random.choice(attack_coords)
 
-    while board[attack_coord] == 'D' or board[attack_coord] == 'X':
+    while board[attack_coord] in ['D', 'X', '#']:
         attack_coord = random.choice(attack_coords)
 
     if targets:
         attack_coord = random.choice(targets)
         targets.remove(attack_coord)
 
-    shoot_conditions(board, attack_coord)
+    shoot_conditions(board, attack_coord, targets)
 
 
-def shoot_conditions(board, attack_coord):
+def shoot_conditions(board, attack_coord, targets):
 
     """checks if shot hits the ship, print the shooting coordinates"""
     if board[attack_coord] == 'S':
@@ -291,10 +348,50 @@ def ship_status(board, ship_list):
                     if board[coord: coord + size] == list('D' * size):
                         board[coord: coord + size] = list('X' * size)
                         print('ship on coordinates', coord, ' destroyed!')
+
+                        if coord > 10:  # check up
+                            board[coord - 10: coord - 10 + size] = '#' * size
+                        if coord < 90:  # check down
+                            board[coord + 10: coord + 10 + size] = '#' * size
+                        if coord % 10 != 0:  # check left
+                            board[coord - 1] = '#'
+                            if board[coord - 1] == '#':  # check left and:
+                                if board[coord - 10] == '#':  # check up
+                                    board[coord - 11] = '#'
+                                if coord < 90 and board[coord + 10] == '#':  # fix out of line problem
+                                    board[coord + 9] = '#'
+                        if (coord + size) % 10 != 0:  # check right
+                            board[coord + size] = '#'
+                            if coord + size < 100 and board[coord + size] == '#':  # fix out of line problem
+                                if board[coord + size - 11] == '#':
+                                    board[coord + size - 10] = '#'
+                                if coord + size < 90 and board[coord + size + 9] == '#':  # fix out of line problem
+                                    board[coord + size + 10] = '#'
                 if orient == 1:
                     if board[coord:coord + (size * 10):10] == list('D' * size):
                         board[coord:coord + (size * 10):10] = list('X' * size)
                         print('ship on coordinates', coord, ' destroyed!')
+
+                        if coord % 10 != 0:  # check left
+                            board[coord - 1:coord + (size * 10) - 1:10] = '#' * size
+                        if coord % 10 != 9:  # check right
+                            board[coord + 1:coord + (size * 10) + 1:10] = '#' * size
+                        if coord > 10:  # check up
+                            board[coord - 10] = '#'
+                        if coord + (size * 10) - 10 < 90:  # check down
+                            board[coord + (size * 10)] = '#'
+                        if board[coord - 10] == '#':  # check up and
+                            if board[coord - 1] == '#' and coord % 10 != 0:
+                                board[coord - 11] = '#'
+                            if board[coord + 1] == '#' and coord % 10 != 9:
+                                board[coord - 9] = '#'
+                        if coord + (size * 10) < 100 and board[
+                            coord + (size * 10)] == '#':  # check down and:. fix out of line problem
+                            if board[coord - 1] == '#' and coord % 10 != 0:
+                                board[coord + (size * 10) - 1] = '#'
+                            if board[coord + 1] == '#' and coord % 10 != 9:
+                                board[coord + (size * 10) + 1] = '#'
+
 
 
 """game cycles"""
@@ -308,7 +405,7 @@ while gamemode == 0:
 
     while 'S' in board1 or 'S' in board2:
         user_attack(board2)
-        comp_attack(board1)
+        comp_attack(board1, targets_1)
         ship_status(board1, ship_list1)
         ship_status(board2, ship_list2)
         cleanboard(board1, clean_board)
@@ -331,8 +428,8 @@ while gamemode == 1:
     gameboard(clean_board, hidden_board)
 
     while 'S' in board1 or 'S' in board2:
-        comp_attack(board1)
-        comp_attack(board2)
+        comp_attack(board1,targets_1)
+        comp_attack(board2, targets_2)
         ship_status(board1, ship_list1)
         ship_status(board2, ship_list2)
         cleanboard(board1, clean_board)
