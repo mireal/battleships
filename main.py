@@ -23,60 +23,6 @@ gamemode = int(input('0 for manual, 1 for comp game :'))
 
 
 
-# def ship_perimeter(size, orient, coord, board, sym, sym2):
-#     """placing the ship and surrounding symbols on the board using given values"""
-#
-#
-#     if orient == 0:
-#         board[coord:coord + size] = sym2 * size
-#
-#         if coord > 10:  # check up
-#             board[coord - 10: coord - 10 + size] = sym * size
-#         if coord < 90:  # check down
-#             board[coord + 10: coord + 10 + size] = sym * size
-#         if coord % 10 != 0:  # check left
-#             board[coord - 1] = sym
-#             if board[coord - 1] == sym:  # check left and:
-#                 if board[coord - 10] == sym:  # check up
-#                     board[coord - 11] = sym
-#                 if coord < 90 and board[coord + 10] == sym:  # fix out of line problem
-#                     board[coord + 9] = sym
-#         if (coord + size) % 10 != 0:  # check right
-#             board[coord + size] = sym
-#             if coord + size < 100 and board[coord + size] == sym:  # fix out of line problem
-#                 if board[coord + size - 11] == sym:
-#                     board[coord + size - 10] = sym
-#                 if coord + size < 90 and board[coord + size + 9] == sym:  # fix out of line problem
-#                     board[coord + size + 10] = sym
-#
-#     if orient == 1:
-#         board[coord:coord + (size * 10):10] = sym * size
-#         if coord % 10 != 0:  # check left
-#             board[coord - 1:coord + (size * 10) - 1:10] = sym * size
-#         if coord % 10 != 9:  # check right
-#             board[coord + 1:coord + (size * 10) + 1:10] = sym * size
-#         if coord > 10:  # check up
-#             board[coord - 10] = sym
-#         if coord + (size * 10) - 10 < 90:  # check down
-#             board[coord + (size * 10)] = sym
-#         if board[coord - 10] == sym:  # check up and
-#             if board[coord - 1] == sym and coord % 10 != 0:
-#                 board[coord - 11] = sym
-#             if board[coord + 1] == sym and coord % 10 != 9:
-#                 board[coord - 9] = sym
-#         if coord + (size * 10) < 100 and board[coord + (size * 10)] == sym:  # check down and:. fix out of line problem
-#             if board[coord - 1] == sym and coord % 10 != 0:
-#                 board[coord + (size * 10) - 1] = sym
-#             if board[coord + 1] == sym and coord % 10 != 9:
-#                 board[coord + (size * 10) + 1] = sym
-#
-#     if sym == '*':
-#         list_of_value = [orient, size, coord]
-#         if board == board2:
-#             ship_list2.append(list_of_value)
-#         else:
-#             ship_list1.append(list_of_value)
-
 
 def battleship(size, orient, coord, board):
     """placing the ship and surrounding symbols on the board using given values"""
@@ -235,7 +181,6 @@ def comp_choice(size, board):
         battleship(size, orient, coord, board)  # size, orient, coord, board
         list_coord.remove(coord)
 
-    # print('orientation - ', orient, 'size - ', size, 'coord - ', coord)
 
 
 def ship_placing(board):
