@@ -14,7 +14,6 @@ ship_list2 = []
 
 attack_coords = list(range(0, 100))
 
-
 targets_1 = list()
 targets_2 = list()
 orient = 0
@@ -22,53 +21,32 @@ orient = 0
 gamemode = int(input('0 for manual, 1 for comp game :'))
 
 
-
-
 def battleship(size, orient, coord, board):
-    """placing the ship and surrounding symbols on the board using given values"""
+    """places the ship on given coordinates and places stars around it, then writes ship parameters in list"""
 
+    stars = ()
     if orient == 0:
         board[coord:coord + size] = 'S' * size
 
-        if coord > 10:  # check up
-            board[coord - 10: coord - 10 + size] = '*' * size
-        if coord < 90:  # check down
-            board[coord + 10: coord + 10 + size] = '*' * size
-        if coord % 10 != 0:  # check left
-            board[coord - 1] = '*'
-            if board[coord - 1] == '*':  # check left and:
-                if board[coord - 10] == '*':  # check up
-                    board[coord - 11] = '*'
-                if coord < 90 and board[coord + 10] == '*':  # fix out of line problem
-                    board[coord + 9] = '*'
-        if (coord + size) % 10 != 0:  # check right
-            board[coord + size] = '*'
-            if coord + size < 100 and board[coord + size] == '*':  # fix out of line problem
-                if board[coord + size - 11] == '*':
-                    board[coord + size - 10] = '*'
-                if coord + size < 90 and board[coord + size + 9] == '*':  # fix out of line problem
-                    board[coord + size + 10] = '*'
+        stars = list(range(coord - 10, coord + size - 10)) + list(range(coord + 10, coord + size + 10))
+        if coord % 10 != 0:
+            stars += list(range(coord - 11, coord + 10, 10))
+        if (coord + size) % 10 != 0:
+            stars += list(range(coord + size - 10, coord + size + 11, 10))
 
-    if orient == 1:
+    elif orient == 1:
         board[coord:coord + (size * 10):10] = 'S' * size
-        if coord % 10 != 0:  # check left
-            board[coord - 1:coord + (size * 10) - 1:10] = '*' * size
-        if coord % 10 != 9:  # check right
-            board[coord + 1:coord + (size * 10) + 1:10] = '*' * size
-        if coord > 10:  # check up
-            board[coord - 10] = '*'
-        if coord + (size * 10) - 10 < 90:  # check down
-            board[coord + (size * 10)] = '*'
-        if board[coord - 10] == '*':  # check up and
-            if board[coord - 1] == '*' and coord % 10 != 0:
-                board[coord - 11] = '*'
-            if board[coord + 1] == '*' and coord % 10 != 9:
-                board[coord - 9] = '*'
-        if coord + (size * 10) < 100 and board[coord + (size * 10)] == '*':  # check down and:. fix out of line problem
-            if board[coord - 1] == '*' and coord % 10 != 0:
-                board[coord + (size * 10) - 1] = '*'
-            if board[coord + 1] == '*' and coord % 10 != 9:
-                board[coord + (size * 10) + 1] = '*'
+
+        stars = list(range(coord - 10, coord + (size * 10) + 1, 10))
+        if coord % 10 != 0:
+            stars += list(range(coord - 11, coord + (size * 10), 10))
+        if coord % 10 != 9:
+            stars += list(range(coord - 9, coord + (size * 10) + 2, 10))
+
+    for i, x in enumerate(board):
+        if i in stars:
+            if x == '_':
+                board[i] = '*'
 
     list_of_value = [orient, size, coord]
     if board == board2:
@@ -182,7 +160,6 @@ def comp_choice(size, board):
         list_coord.remove(coord)
 
 
-
 def ship_placing(board):
     """automatically places 10 ships of different sizes on board"""
     board = board
@@ -234,24 +211,21 @@ def comp_attack(board, targets):
 
 
 def shoot_conditions(board, attack_coord, targets):
-
     """checks if shot hits the ship, print the shooting coordinates"""
     if board[attack_coord] == 'S':
         board[attack_coord] = 'D'
 
-        if board[attack_coord - 1] == 'S':
+        if attack_coord > 0 and board[attack_coord - 1] == 'S':
             targets.append(attack_coord - 1)
+        if attack_coord > 9 and board[attack_coord - 10] == 'S':
+            targets.append(attack_coord - 10)
         if attack_coord < 99 and board[attack_coord + 1] == 'S':
             targets.append(attack_coord + 1)
-        if board[attack_coord - 10] == 'S':
-            targets.append(attack_coord - 10)
         if attack_coord < 90 and board[attack_coord + 10] == 'S':
             targets.append(attack_coord + 10)
 
     else:
         board[attack_coord] = '#'
-
-
 
     if gamemode == 1:
         if board == board1:
@@ -273,11 +247,12 @@ def shoot_conditions(board, attack_coord, targets):
         else:
             print(' Miss!')
 
+
 def ship_status(board, ship_list):
     """check if all ship squares are damaged, then replace it with X squares """
     size = 0
     orient = 0
-    coord = 0
+    # coord = 0
 
     for ship in ship_list:
         for ind, value in enumerate(ship):
@@ -294,49 +269,22 @@ def ship_status(board, ship_list):
                         board[coord: coord + size] = list('X' * size)
                         print('ship on coordinates', coord, ' destroyed!')
 
-                        if coord > 10:  # check up
-                            board[coord - 10: coord - 10 + size] = '#' * size
-                        if coord < 90:  # check down
-                            board[coord + 10: coord + 10 + size] = '#' * size
-                        if coord % 10 != 0:  # check left
-                            board[coord - 1] = '#'
-                            if board[coord - 1] == '#':  # check left and:
-                                if board[coord - 10] == '#':  # check up
-                                    board[coord - 11] = '#'
-                                if coord < 90 and board[coord + 10] == '#':  # fix out of line problem
-                                    board[coord + 9] = '#'
-                        if (coord + size) % 10 != 0:  # check right
-                            board[coord + size] = '#'
-                            if coord + size < 100 and board[coord + size] == '#':  # fix out of line problem
-                                if board[coord + size - 11] == '#':
-                                    board[coord + size - 10] = '#'
-                                if coord + size < 90 and board[coord + size + 9] == '#':  # fix out of line problem
-                                    board[coord + size + 10] = '#'
+                        stars = list(range(coord - 10, coord + size - 10)) + list(range(coord + 10, coord + size + 10))
+                        if coord % 10 != 0:
+                            stars += list(range(coord - 11, coord + 10, 10))
+                        if (coord + size) % 10 != 0:
+                            stars += list(range(coord + size - 10, coord + size + 11, 10))
+
                 if orient == 1:
                     if board[coord:coord + (size * 10):10] == list('D' * size):
                         board[coord:coord + (size * 10):10] = list('X' * size)
                         print('ship on coordinates', coord, ' destroyed!')
 
-                        if coord % 10 != 0:  # check left
-                            board[coord - 1:coord + (size * 10) - 1:10] = '#' * size
-                        if coord % 10 != 9:  # check right
-                            board[coord + 1:coord + (size * 10) + 1:10] = '#' * size
-                        if coord > 10:  # check up
-                            board[coord - 10] = '#'
-                        if coord + (size * 10) - 10 < 90:  # check down
-                            board[coord + (size * 10)] = '#'
-                        if board[coord - 10] == '#':  # check up and
-                            if board[coord - 1] == '#' and coord % 10 != 0:
-                                board[coord - 11] = '#'
-                            if board[coord + 1] == '#' and coord % 10 != 9:
-                                board[coord - 9] = '#'
-                        if coord + (size * 10) < 100 and board[
-                            coord + (size * 10)] == '#':  # check down and:. fix out of line problem
-                            if board[coord - 1] == '#' and coord % 10 != 0:
-                                board[coord + (size * 10) - 1] = '#'
-                            if board[coord + 1] == '#' and coord % 10 != 9:
-                                board[coord + (size * 10) + 1] = '#'
-
+                        stars = list(range(coord - 10, coord + (size * 10) + 1, 10))
+                        if coord % 10 != 0:
+                            stars += list(range(coord - 11, coord + (size * 10), 10))
+                        if coord % 10 != 9:
+                            stars += list(range(coord - 9, coord + (size * 10) + 2, 10))
 
 
 """game cycles"""
@@ -373,7 +321,7 @@ while gamemode == 1:
     gameboard(clean_board, hidden_board)
 
     while 'S' in board1 or 'S' in board2:
-        comp_attack(board1,targets_1)
+        comp_attack(board1, targets_1)
         comp_attack(board2, targets_2)
         ship_status(board1, ship_list1)
         ship_status(board2, ship_list2)
