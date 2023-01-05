@@ -19,12 +19,14 @@ targets_2 = list()
 orient = 0
 
 gamemode = int(input('0 for manual, 1 for comp game :'))
+while gamemode not in range(0, 2):
+    gamemode = int(input('0 for manual, 1 for comp game :'))
 
 
 def battleship(size, orient, coord, board):
     """places the ship on given coordinates and places stars around it, then writes ship parameters in list"""
 
-    stars = ()
+    stars = []
     if orient == 0:
         board[coord:coord + size] = 'S' * size
 
@@ -274,6 +276,11 @@ def ship_status(board, ship_list):
                             stars += list(range(coord - 11, coord + 10, 10))
                         if (coord + size) % 10 != 0:
                             stars += list(range(coord + size - 10, coord + size + 11, 10))
+                        # print(stars)
+                        for i, x in enumerate(board):
+                            if i in stars:
+                                if x == '*':
+                                    board[i] = '#'
 
                 if orient == 1:
                     if board[coord:coord + (size * 10):10] == list('D' * size):
@@ -285,6 +292,11 @@ def ship_status(board, ship_list):
                             stars += list(range(coord - 11, coord + (size * 10), 10))
                         if coord % 10 != 9:
                             stars += list(range(coord - 9, coord + (size * 10) + 2, 10))
+                        # print(stars)
+                        for i, x in enumerate(board):
+                            if i in stars:
+                                if x == '*':
+                                    board[i] = '#'
 
 
 """game cycles"""
